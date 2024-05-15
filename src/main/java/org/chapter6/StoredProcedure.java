@@ -27,7 +27,7 @@ public interface StoredProcedure {
     /**
      * 指定したケースの処理を実行する
      *
-     * @param testCase
+     * @param testCase 実施テストケース
      * @return resultState 実行結果
      */
     ResultData excute(testCaseEnum testCase);
@@ -35,7 +35,7 @@ public interface StoredProcedure {
     /**
      * 引数チェック（NULLチェック, 存在チェック)
      *
-     * @param argument
+     * @param argument 引数（型は問わない）
      * @return resultState 実行結果
      */
     default boolean isArgumentError(Object argument){

@@ -28,7 +28,7 @@ public interface JdbcExecute {
     /**
      * 指定したケースの処理を実行する
      *
-     * @param testCase
+     * @param testCase 実施テストケース
      * @return resultState 実行結果
      */
     ResultData excute(testCaseEnum testCase);
@@ -36,14 +36,11 @@ public interface JdbcExecute {
     /**
      * 引数チェック（NULLチェック, 存在チェック)
      *
-     * @param argument
+     * @param argument 引数（型は問わない）
      * @return resultState 実行結果
      */
     default boolean isArgumentError(Object argument){
-        if (Objects.isNull(argument)) {
-            return true;
-        }
-        return Arrays.stream(testCaseEnum.values())
+        return Objects.isNull(argument) || Arrays.stream(StoredProcedure.testCaseEnum.values())
                 .allMatch(val -> Objects.equals(argument, val));
     }
 }
