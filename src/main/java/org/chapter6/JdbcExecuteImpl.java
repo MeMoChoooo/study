@@ -126,7 +126,7 @@ public class JdbcExecuteImpl implements JdbcExecute {
                 // DB接続正常終了 例外処理未検知ならば NORMAL_COMPLETE
                 returnText = decideText.apply(currentText, NORMAL_COMPLETE);
             } else {
-                // DB接続異常 例外処理未検知ならば UNREACHBLE_ERRPR
+                // DB接続異常 例外処理未検知ならば UNREACHABLE_ERROR
                 returnText = decideText.apply(currentText, UNREACHABLE_ERROR);
             }
         } catch (Exception e) {
