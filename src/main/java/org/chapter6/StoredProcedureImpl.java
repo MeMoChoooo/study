@@ -2,6 +2,7 @@ package org.chapter6;
 
 import org.common.Common;
 import org.common.ResultData;
+import org.junit.platform.commons.util.StringUtils;
 
 import java.sql.*;
 import java.util.NoSuchElementException;
@@ -18,6 +19,11 @@ import static org.common.ErrorText.UNREACHABLE_ERROR;
 public class StoredProcedureImpl implements StoredProcedure{
 
     /**
+     * INSERT繰り返し回数
+     */
+    private static final int INSERT_COUNT = 10;
+
+    /**
      * 指定したケースの処理を実行する
      *
      * @param testCase 実施テストケース
@@ -25,7 +31,6 @@ public class StoredProcedureImpl implements StoredProcedure{
      */
     @Override
     public ResultData excute(testCaseEnum testCase) {
-        Connection con = null;
         String returnText = null;
         try {
             // 引数チェック
@@ -33,48 +38,62 @@ public class StoredProcedureImpl implements StoredProcedure{
 
             // DB接続・設定
             Properties conInfo = Common.importProperties().orElseThrow();
-            con = DriverManager.getConnection(
-                    conInfo.getProperty("url"),
-                    conInfo.getProperty("user"),
-                    conInfo.getProperty("pass"));
 
             // 実行
-            sqlExecute(testCase, con);
-
+            returnText = sqlDeleteExecute(conInfo, returnText);
+            returnText = sqlInsertExecute(testCase, conInfo, returnText);
+            returnText = sqlSelectExecute(testCase, conInfo, returnText);
         } catch (IllegalArgumentException e) {
             returnText = ARGUMENT_ERROR;
         } catch (NoSuchElementException e) {
             returnText = SYSTEM_ERROR;
         } catch(Exception e) {
             returnText =  e.getMessage();
-        } finally {
-            returnText = finallyProcess(con, returnText);
         }
-        return new ResultData(returnText, null);
+        return new ResultData(StringUtils.isBlank(returnText)?NORMAL_COMPLETE:returnText, null);
     }
 
     /**
-     * 指定したテストケースに応じた実行処理を行い、実行結果を表示する
+     * DELETE処理を行い、実行結果を表示する
      *
-     * @param testCase 実施テストケース
-     * @param con 接続
+     * @param conInfo 接続先情報
      * @throws SQLException SQL実行エラー
      */
-    private void sqlExecute(testCaseEnum testCase, Connection con) throws SQLException {
+    private String sqlDeleteExecute(Properties conInfo, String currentText) throws SQLException {
         final String SQL_DELETE = "DELETE FROM person;";
-        final String SQL_INSERT = "INSERT INTO person (id, name, sex, job) VALUES (? ,?, ?, 'tester');";
-        final String SQL_SELECT = "SELECT id, name, sex, job FROM person WHERE name = ?;";
-        final int INSERT_COUNT = 10;
+        final String CON_INFO_URL = conInfo.getProperty("url");
+        final String CON_INFO_USER = conInfo.getProperty("user");
+        final String CON_INFO_PASS = conInfo.getProperty("pass");
 
         PreparedStatement psDelete = null;
-        PreparedStatement psInsert = null;
-        PreparedStatement psSelect = null;
+        String returnText;
 
-        try {
+        try (Connection con = getConnection(CON_INFO_URL, CON_INFO_USER, CON_INFO_PASS)){
             // PK違反避け
             psDelete = con.prepareStatement(SQL_DELETE);
             psDelete.executeUpdate();
+        } finally {
+            returnText =  finallyProcess(psDelete, currentText);
+        }
+        return returnText;
+    }
 
+    /**
+     * 指定したテストケースに応じたINSERT処理を行い、実行結果を表示する
+     *
+     * @param testCase 実施テストケース
+     * @throws SQLException SQL実行エラー
+     */
+    private String sqlInsertExecute(testCaseEnum testCase, Properties conInfo, String currentText) throws SQLException {
+        final String SQL_INSERT = "INSERT INTO person (id, name, sex, job) VALUES (? ,?, ?, 'tester');";
+        final String CON_INFO_URL = conInfo.getProperty("url");
+        final String CON_INFO_USER = conInfo.getProperty("user");
+        final String CON_INFO_PASS = conInfo.getProperty("pass");
+
+        PreparedStatement psInsert = null;
+        String returnText;
+
+        try (Connection con = getConnection(CON_INFO_URL, CON_INFO_USER, CON_INFO_PASS)){
             // クエリ引数設定
             psInsert = con.prepareStatement(SQL_INSERT);
             for (int i = 0; i < (INSERT_COUNT - 1); i++) {
@@ -105,8 +124,29 @@ public class StoredProcedureImpl implements StoredProcedure{
 
             // 実行
             psInsert.executeBatch();
+        } finally {
+            returnText =  finallyProcess(psInsert, currentText);
+        }
+        return  returnText;
+    }
 
-            // 結果表示
+    /**
+     * DELETE処理を行い、実行結果を表示する
+     *
+     * @param conInfo 接続先情報
+     * @throws SQLException SQL実行エラー
+     */
+    private String sqlSelectExecute(testCaseEnum testCase, Properties conInfo, String currentText) throws SQLException {
+        final String SQL_SELECT = "SELECT id, name, sex, job FROM person WHERE name = ?;";
+        final String CON_INFO_URL = conInfo.getProperty("url");
+        final String CON_INFO_USER = conInfo.getProperty("user");
+        final String CON_INFO_PASS = conInfo.getProperty("pass");
+
+        PreparedStatement psSelect = null;
+        String returnText;
+
+        try (Connection con = getConnection(CON_INFO_URL, CON_INFO_USER, CON_INFO_PASS)){
+            // PK違反避け
             psSelect = con.prepareStatement(SQL_SELECT);
             psSelect.setString(1, testCase.name());
             ResultSet rs = psSelect.executeQuery();
@@ -120,24 +160,26 @@ public class StoredProcedureImpl implements StoredProcedure{
                 System.out.println("job :" + rs.getString(4));
             }
         } finally {
-            if(Objects.nonNull(psDelete))psDelete.close();
-            if(Objects.nonNull(psInsert))psInsert.close();
-            if(Objects.nonNull(psSelect))psSelect.close();
-            con.close();
+            returnText =  finallyProcess(psSelect, currentText);
         }
+        return returnText;
     }
 
-    private String finallyProcess(Connection con, String currentText){
+    private Connection getConnection(String url, String user, String pass) throws SQLException {
+        return DriverManager.getConnection(url, user, pass);
+    }
+
+    private String finallyProcess(PreparedStatement ps, String currentText){
         BinaryOperator<String> decideText =
-                ((current, result) -> (Objects.isNull(current)?result:current));
+                ((current, result) -> (Objects.equals(current, "")?result:current));
         String returnText;
         try {
-            if (Objects.nonNull(con) && con.isClosed()) {
-                con.close();
-                // DB接続正常終了 例外処理未検知ならば NORMAL_COMPLETE
+            if (Objects.nonNull(ps) && ps.isClosed()) {
+                ps.close();
+                // 正常終了 例外処理未検知ならば NORMAL_COMPLETE
                 returnText = decideText.apply(currentText, NORMAL_COMPLETE);
             } else {
-                // DB接続異常 例外処理未検知ならばUNREACHABLE_ERROR
+                // 終了処理異常 例外処理未検知ならばUNREACHABLE_ERROR
                 returnText = decideText.apply(currentText, UNREACHABLE_ERROR);
             }
         } catch (Exception e) {
