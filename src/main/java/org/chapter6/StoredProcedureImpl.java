@@ -131,7 +131,7 @@ public class StoredProcedureImpl implements StoredProcedure{
     }
 
     /**
-     * DELETE処理を行い、実行結果を表示する
+     * SELECT処理を行い、実行結果を表示する
      *
      * @param conInfo 接続先情報
      * @throws SQLException SQL実行エラー

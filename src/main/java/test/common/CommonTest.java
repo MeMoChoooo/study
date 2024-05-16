@@ -12,6 +12,10 @@ import java.util.Properties;
 import static org.common.Common.testCaseEnum.PROPERTIES_ERROR;
 import static org.junit.Assert.assertThat;
 
+
+/**
+ * Commonクラスのテストクラス
+ */
 public class CommonTest extends TestTemplate {
 
     @Test
