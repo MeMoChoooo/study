@@ -165,10 +165,26 @@ public class StoredProcedureImpl implements StoredProcedure{
         return returnText;
     }
 
+    /**
+     * DB接続
+     *
+     * @param url URL
+     * @param user USER
+     * @param pass PASSWORD
+     * @return DB接続オブジェクト
+     * @throws SQLException 接続失敗
+     */
     private Connection getConnection(String url, String user, String pass) throws SQLException {
         return DriverManager.getConnection(url, user, pass);
     }
 
+    /**
+     * 終了処理
+     *
+     * @param ps SQL実行オブジェクト
+     * @param currentText 現在の実行結果
+     * @return 実行結果
+     */
     private String finallyProcess(PreparedStatement ps, String currentText){
         BinaryOperator<String> decideText =
                 ((current, result) -> (Objects.equals(current, "")?result:current));

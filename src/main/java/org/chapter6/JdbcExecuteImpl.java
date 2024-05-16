@@ -123,10 +123,10 @@ public class JdbcExecuteImpl implements JdbcExecute {
     }
 
     /**
-     * finallyにて実行する処理
+     * 終了処理
      *
      * @param con 接続先
-     * @param currentText 現在の実行結果状態
+     * @param currentText 現在の実行結果
      * @return 実行結果
      */
     private String finallyProcess(Connection con, String currentText){
