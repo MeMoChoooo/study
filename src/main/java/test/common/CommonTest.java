@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import java.util.Optional;
 import java.util.Properties;
 
-import static org.common.Common.testCaseEnum.PROPATIES_ERROR;
+import static org.common.Common.testCaseEnum.PROPERTIES_ERROR;
 import static org.junit.Assert.assertThat;
 
 public class CommonTest extends TestTemplate {
@@ -31,7 +31,7 @@ public class CommonTest extends TestTemplate {
     @Test
     @DisplayName("異常：Propaties取得失敗")
     public void test02() {
-        setTestFlag(PROPATIES_ERROR,true);
+        setTestFlag(PROPERTIES_ERROR,true);
         Optional<Properties> proInfo = Common.importProperties();
         assertThat(proInfo.isEmpty(),
                 CoreMatchers.is(true));

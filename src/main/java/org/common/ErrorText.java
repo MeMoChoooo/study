@@ -37,7 +37,7 @@ public class ErrorText {
      * 受け取ったエラーメッセージが正常であるかを確認する
      *
      * @param text メッセージ
-     * @return 正常/異常
+     * @return 正常/正常ではない
      */
     public static boolean isNormal(String text){
         return NORMAL_COMPLETE.equals(text);
@@ -47,7 +47,7 @@ public class ErrorText {
      * 受け取ったエラーメッセージが異常であるかを確認する
      *
      * @param text メッセージ
-     * @return 正常/異常
+     * @return 異常/異常ではない
      */
     public static boolean isError(String text){
         return !(NORMAL_COMPLETE.equals(text));

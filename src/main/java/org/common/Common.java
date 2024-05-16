@@ -1,22 +1,28 @@
 package org.common;
 
-import org.common.test.TestState;
+import org.common.test.TestStatus;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-import static org.common.Common.testCaseEnum.PROPATIES_ERROR;
+import static org.common.Common.testCaseEnum.PROPERTIES_ERROR;
 
+/**
+ * 共通処理
+ */
 public class Common {
 
     private Common(){
         throw new IllegalStateException("Utility class");
     }
 
+    /**
+     * テストにて発生可能なエラーケース
+     */
     public enum testCaseEnum {
-        PROPATIES_ERROR("PROPATIES_ERROR", 0);
+        PROPERTIES_ERROR("PROPERTIES_ERROR", 0);
 
         public final String outline;
         public final int index;
@@ -27,18 +33,26 @@ public class Common {
         }
     }
 
-    public static final String PROPATIES_PASS = "src/main/common.properties";
+    /**
+     * プロパティファイルのパス
+     */
+    private static final String PROPERTIES_PASS = "src/main/common.properties";
 
+    /**
+     * プロパティファイルからのデータ取得処理
+     *
+     * @return proInfo プロパティ情報
+     */
     public static Optional<Properties> importProperties() {
         Properties proInfo;
-        try (InputStream istream = new FileInputStream(PROPATIES_PASS)) {
+        try (InputStream stream = new FileInputStream(PROPERTIES_PASS)) {
             proInfo = new Properties();
-            proInfo.load(istream);
+            proInfo.load(stream);
         } catch (Exception e) {
             proInfo = null;
         }
         // テスト用フラグ (プロパティ取得失敗ケース実施時)
-        if(TestState.getTestFlag(PROPATIES_ERROR))proInfo = null;
+        if(TestStatus.getTestFlag(PROPERTIES_ERROR))proInfo = null;
 
         return Optional.ofNullable(proInfo);
     }

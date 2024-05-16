@@ -17,10 +17,10 @@ public interface StoredProcedure {
         CASE1("CASE1"),
         CASE2("CASE2");
 
-        private final String name;
+        public final String outline;
 
         testCaseEnum(String name){
-            this.name = name;
+            this.outline = name;
         }
     }
 
@@ -28,15 +28,15 @@ public interface StoredProcedure {
      * 指定したケースの処理を実行する
      *
      * @param testCase 実施テストケース
-     * @return resultState 実行結果
+     * @return 実行結果
      */
-    ResultData excute(testCaseEnum testCase);
+    ResultData execute(testCaseEnum testCase);
 
     /**
      * 引数チェック（NULLチェック, 存在チェック)
      *
      * @param argument 引数（型は問わない）
-     * @return resultState 実行結果
+     * @return 引数異常有無チェック結果
      */
     default boolean isArgumentError(Object argument){
         return Objects.isNull(argument) || Arrays.stream(testCaseEnum.values())

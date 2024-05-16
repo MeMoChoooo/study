@@ -7,16 +7,19 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import static org.common.Common.testCaseEnum.PROPATIES_ERROR;
+import static org.common.Common.testCaseEnum.PROPERTIES_ERROR;
 import static org.junit.Assert.assertThat;
 
+/**
+ * StoredProcedureImplのテストクラス
+ */
 public class StoredProcedureImplTest extends TestTemplate {
 
     @Test
     @DisplayName("正常系：CASE1")
     public void test01(){
         StoredProcedure test = new StoredProcedureImpl();
-        assertThat(test.excute(StoredProcedure.testCaseEnum.CASE1).getText(),
+        assertThat(test.execute(StoredProcedure.testCaseEnum.CASE1).getText(),
                 CoreMatchers.is("正常終了"));
     }
 
@@ -24,16 +27,16 @@ public class StoredProcedureImplTest extends TestTemplate {
     @DisplayName("異常系：CASE2")
     public void test02(){
         StoredProcedure test = new StoredProcedureImpl();
-        assertThat(test.excute(StoredProcedure.testCaseEnum.CASE2).getText(),
+        assertThat(test.execute(StoredProcedure.testCaseEnum.CASE2).getText(),
                 CoreMatchers.is("バッチ 9 INSERT INTO person (id, name, sex, job) VALUES (('000000000008') ,('CASE2'), ('9'), 'tester') はアボートしました: ERROR: 重複したキー値は一意性制約\"person_pkey\"違反となります\n  詳細: キー (id)=(000000000008) はすでに存在します。 このバッチの他のエラーは getNextException を呼び出すことで確認できます。"));
     }
 
     @Test
     @DisplayName("異常系：properties取得失敗")
     public void test04(){
-        setTestFlag(PROPATIES_ERROR,true);
+        setTestFlag(PROPERTIES_ERROR,true);
         StoredProcedure test = new StoredProcedureImpl();
-        assertThat(test.excute(StoredProcedure.testCaseEnum.CASE1).getText(),
+        assertThat(test.execute(StoredProcedure.testCaseEnum.CASE1).getText(),
                 CoreMatchers.is("システムエラー"));
     }
 }

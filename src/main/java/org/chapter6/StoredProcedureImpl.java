@@ -27,10 +27,10 @@ public class StoredProcedureImpl implements StoredProcedure{
      * 指定したケースの処理を実行する
      *
      * @param testCase 実施テストケース
-     * @return resultState 実行結果
+     * @return 実行結果
      */
     @Override
-    public ResultData excute(testCaseEnum testCase) {
+    public ResultData execute(testCaseEnum testCase) {
         String returnText = null;
         try {
             // 引数チェック

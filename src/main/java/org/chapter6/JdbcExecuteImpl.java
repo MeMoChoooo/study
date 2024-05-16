@@ -17,8 +17,14 @@ import static org.common.ErrorText.*;
  */
 public class JdbcExecuteImpl implements JdbcExecute {
 
+    /**
+     * 指定したケースの処理を実行する
+     *
+     * @param testCase 実施テストケース
+     * @return 実行結果
+     */
     @Override
-    public ResultData excute(testCaseEnum testCase) {
+    public ResultData execute(testCaseEnum testCase) {
         Connection con = null;
         String returnText = null;
         try {
@@ -51,8 +57,8 @@ public class JdbcExecuteImpl implements JdbcExecute {
     /**
      * 指定したケースのSQLを返す
      *
-     * @param testCase
-     * @return sqlQuery 実行するSQLクエリ
+     * @param testCase 実施テストケース
+     * @return 実行するSQLクエリ SQL実行エラー
      */
     private String sqlCase (testCaseEnum testCase) {
         switch (testCase) {
@@ -70,9 +76,9 @@ public class JdbcExecuteImpl implements JdbcExecute {
     /**
      * 指定したテストケースに応じた実行処理を行い、実行結果を表示する
      *
-     * @param testCase
-     * @param ps
-     * @throws SQLException
+     * @param testCase 実施テストケース
+     * @param ps 実施SQL
+     * @throws SQLException SQL実行エラー
      */
     private void sqlExecute(testCaseEnum testCase, PreparedStatement ps) throws SQLException {
         try {
@@ -116,6 +122,13 @@ public class JdbcExecuteImpl implements JdbcExecute {
         }
     }
 
+    /**
+     * finallyにて実行する処理
+     *
+     * @param con 接続先
+     * @param currentText 現在の実行結果状態
+     * @return 実行結果
+     */
     private String finallyProcess(Connection con, String currentText){
         BinaryOperator<String> decideText =
                 ((current, result) -> (Objects.isNull(current)?result:current));
