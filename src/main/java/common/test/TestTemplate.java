@@ -1,8 +1,9 @@
-package org.common.test;
+package common.test;
 
-import org.common.Common;
-import org.junit.After;
-import org.junit.Before;
+import common.Common;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 
 /**
  * テストテンプレート
@@ -12,7 +13,7 @@ public class TestTemplate {
     /**
      * テスト実施前準備
      */
-    @Before
+    @BeforeEach
     public void init(){
         TestStatus.allFalseTestFlag();
     }
@@ -20,7 +21,7 @@ public class TestTemplate {
     /**
      * テスト実施後
      */
-    @After
+    @AfterEach
     public void after(){
         TestStatus.allFalseTestFlag();
     }

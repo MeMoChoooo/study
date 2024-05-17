@@ -1,4 +1,4 @@
-package org.common;
+package common;
 
 /**
  *　実行メソッドの実行結果データ

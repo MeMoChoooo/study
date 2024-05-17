@@ -1,4 +1,4 @@
-package org.chapter5;
+package chapter5;
 
 import java.io.*;
 import java.util.Objects;

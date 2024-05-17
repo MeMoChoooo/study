@@ -1,22 +1,21 @@
-package org.chapter6;
+package chapter6;
 
-import org.common.ResultData;
+import common.ResultData;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * JDBCの実装　インタフェース
+ * ストアド・プロージャの実装　インタフェース
  */
-public interface JdbcExecute {
+public interface StoredProcedure {
 
     /**
      * 実行可能なテストケース
      */
     enum testCaseEnum {
-        DELETE("DELETE"),
-        INSERT("INSERT"),
-        SELECT("SELECT");
+        CASE1("CASE1"),
+        CASE2("CASE2");
 
         public final String outline;
 
@@ -40,7 +39,7 @@ public interface JdbcExecute {
      * @return 引数異常有無チェック結果
      */
     default boolean isArgumentError(Object argument){
-        return Objects.isNull(argument) || Arrays.stream(StoredProcedure.testCaseEnum.values())
+        return Objects.isNull(argument) || Arrays.stream(testCaseEnum.values())
                 .allMatch(val -> Objects.equals(argument, val));
     }
 }

@@ -1,7 +1,7 @@
-package org.chapter6;
+package chapter6;
 
-import org.common.Common;
-import org.common.ResultData;
+import common.Common;
+import common.ResultData;
 import org.junit.platform.commons.util.StringUtils;
 
 import java.sql.*;
@@ -10,8 +10,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.function.BinaryOperator;
 
-import static org.common.ErrorText.*;
-import static org.common.ErrorText.UNREACHABLE_ERROR;
+import static common.ErrorText.*;
 
 /**
  * ストアド・プロージャの実装　実装クラス

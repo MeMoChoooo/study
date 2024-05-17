@@ -1,15 +1,17 @@
-package org.chapter6;
+package chapter6;
 
-import org.common.Common;
-import org.common.ResultData;
 
+
+import common.Common;
+import common.ResultData;
 import java.sql.*;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.BinaryOperator;
 
-import static org.common.ErrorText.*;
+import static common.ErrorText.*;
+
 
 /**
  * JDBCの実装　実装クラス

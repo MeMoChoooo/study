@@ -1,13 +1,14 @@
-package org.common;
+package common;
 
-import org.common.test.TestStatus;
+import common.test.TestStatus;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-import static org.common.Common.testCaseEnum.PROPERTIES_ERROR;
+import static common.Common.testCaseEnum.PROPERTIES_ERROR;
+
 
 /**
  * 共通処理
