@@ -66,4 +66,14 @@ public class ResultData {
     public boolean isNormal() {
         return ErrorText.isNormal(text);
     }
+
+    /**
+     * 結果状態の異常確認
+     *
+     * @return 異常/異常ではない
+     */
+    public void display() {
+        System.out.println(text);
+        System.out.println(data);
+    }
 }

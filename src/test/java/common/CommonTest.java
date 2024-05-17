@@ -16,11 +16,11 @@ import static common.Common.testCaseEnum.PROPERTIES_ERROR;
 /**
  * Commonクラスのテストクラス
  */
-public class CommonTest extends TestTemplate {
+class CommonTest extends TestTemplate {
 
     @Test
-    @DisplayName("正常:Propaties取得成功")
-    public void test01() {
+    @DisplayName("正常:Properties取得成功")
+    void test01() {
         Properties proInfo = Common.importProperties().orElseThrow();
         assert "jdbc:postgresql://localhost:5432/postgres".equals(proInfo.getProperty("url"));
         assert "postgres".equals(proInfo.getProperty("user"));
@@ -29,8 +29,8 @@ public class CommonTest extends TestTemplate {
     }
 
     @Test
-    @DisplayName("異常：Propaties取得失敗")
-    public void test02() {
+    @DisplayName("異常：Properties取得失敗")
+    void test02() {
         setTestFlag(PROPERTIES_ERROR,true);
         Optional<Properties> proInfo = Common.importProperties();
         assert proInfo.isEmpty();
