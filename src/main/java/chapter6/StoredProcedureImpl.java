@@ -30,7 +30,7 @@ public class StoredProcedureImpl implements StoredProcedure{
      */
     @Override
     public ResultData execute(testCaseEnum testCase) {
-        String returnText = null;
+        String returnText = "";
         try {
             // 引数チェック
             if (isArgumentError(testCase)) throw new IllegalArgumentException();
@@ -67,7 +67,7 @@ public class StoredProcedureImpl implements StoredProcedure{
         PreparedStatement psDelete = null;
         String returnText;
 
-        try (Connection con = getConnection(CON_INFO_URL, CON_INFO_USER, CON_INFO_PASS)){
+        try (Connection con = getConnection(CON_INFO_URL, CON_INFO_USER, CON_INFO_PASS)) {
             // PK違反避け
             psDelete = con.prepareStatement(SQL_DELETE);
             psDelete.executeUpdate();
@@ -145,7 +145,7 @@ public class StoredProcedureImpl implements StoredProcedure{
         String returnText;
 
         try (Connection con = getConnection(CON_INFO_URL, CON_INFO_USER, CON_INFO_PASS)){
-            // PK違反避け
+            // 結果表示
             psSelect = con.prepareStatement(SQL_SELECT);
             psSelect.setString(1, testCase.name());
             ResultSet rs = psSelect.executeQuery();
@@ -186,10 +186,10 @@ public class StoredProcedureImpl implements StoredProcedure{
      */
     private String finallyProcess(PreparedStatement ps, String currentText){
         BinaryOperator<String> decideText =
-                ((current, result) -> (Objects.equals(current, "")?result:current));
+                ((current, result) -> StringUtils.isBlank(current)?result:current);
         String returnText;
         try {
-            if (Objects.nonNull(ps) && ps.isClosed()) {
+            if (Objects.nonNull(ps)) {
                 ps.close();
                 // 正常終了 例外処理未検知ならば NORMAL_COMPLETE
                 returnText = decideText.apply(currentText, NORMAL_COMPLETE);
