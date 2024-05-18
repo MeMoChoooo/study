@@ -8,7 +8,6 @@ import java.sql.*;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.function.BinaryOperator;
 
 import static common.ErrorText.*;
 
@@ -27,7 +26,6 @@ public class JdbcExecuteImpl implements JdbcExecute {
      */
     @Override
     public ResultData execute(testCaseEnum testCase) {
-        Connection con = null;
         String returnText = null;
         try {
             // 引数チェック
@@ -35,15 +33,9 @@ public class JdbcExecuteImpl implements JdbcExecute {
 
             // DB接続・設定
             Properties conInfo = Common.importProperties().orElseThrow();
-            con = DriverManager.getConnection(
-                    conInfo.getProperty("url"),
-                    conInfo.getProperty("user"),
-                    conInfo.getProperty("pass"));
-            PreparedStatement ps = con.prepareStatement(sqlCase(testCase));
 
             // 実行
-            sqlExecute(testCase, ps);
-
+            sqlExecute(testCase, conInfo);
         } catch (IllegalArgumentException e) {
             returnText = ARGUMENT_ERROR;
         } catch (NoSuchElementException e) {
@@ -51,7 +43,7 @@ public class JdbcExecuteImpl implements JdbcExecute {
         } catch(Exception e) {
             returnText =  Objects.nonNull(e.getMessage())?e.getMessage():e.toString();
         } finally {
-            returnText = finallyProcess(con, returnText);
+            returnText = Objects.isNull(returnText)?NORMAL_COMPLETE:returnText;
         }
         return new ResultData(returnText, null);
     }
@@ -79,74 +71,49 @@ public class JdbcExecuteImpl implements JdbcExecute {
      * 指定したテストケースに応じた実行処理を行い、実行結果を表示する
      *
      * @param testCase 実施テストケース
-     * @param ps 実施SQL
+     * @param conInfo 接続情報
      * @throws SQLException SQL実行エラー
      */
-    private void sqlExecute(testCaseEnum testCase, PreparedStatement ps) throws SQLException {
-        try {
-            // クエリ引数設定
-            switch (testCase) {
-                case DELETE:
-                case SELECT:
-                    ps.setString(1, "000000000000");
-                    break;
-                case INSERT:
-                    ps.setString(1, "000000000000");
-                    ps.setString(2, "test");
-                    ps.setString(3, "1");
-                    ps.setString(4, "tester");
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
+    private void sqlExecute(testCaseEnum testCase, Properties conInfo) throws SQLException {
+        final String ID = "000000000000";
+        try (Connection con = DriverManager.getConnection(
+                conInfo.getProperty("url"),
+                conInfo.getProperty("user"),
+                conInfo.getProperty("pass"))) {
 
-            // 実行 AND 結果表示
-            switch (testCase) {
-                case DELETE:
-                case INSERT:
-                    int result = ps.executeUpdate();
-                    System.out.println(testCase.name() + "実行結果：" + result);
-                    break;
-                case SELECT:
-                    ResultSet resultSet = ps.executeQuery();
-                    resultSet.next();
-                    System.out.println(testCase.name() + "実行結果：");
-                    System.out.println("id  :" + resultSet.getString(1));
-                    System.out.println("name:" + resultSet.getString(2));
-                    System.out.println("sex :" + resultSet.getString(3));
-                    System.out.println("job :" + resultSet.getString(4));
-                    break;
-                default:
-                    throw new IllegalArgumentException();
+            System.out.print(testCase.name() + "実行結果：");
+            try (PreparedStatement ps = con.prepareStatement(sqlCase(testCase))) {
+                switch (testCase) {
+                    case DELETE:
+                        // クエリ引数設定
+                        ps.setString(1, ID);
+                        // 実行 AND 結果表示
+                        System.out.println(ps.executeUpdate());
+                        break;
+                    case SELECT:
+                        // クエリ引数設定
+                        ps.setString(1, ID);
+                        // 実行 AND 結果表示
+                        ResultSet resultSet = ps.executeQuery();
+                        resultSet.next();
+                        System.out.println("id  :" + resultSet.getString(1));
+                        System.out.println("name:" + resultSet.getString(2));
+                        System.out.println("sex :" + resultSet.getString(3));
+                        System.out.println("job :" + resultSet.getString(4));
+                        break;
+                    case INSERT:
+                        // クエリ引数設定
+                        ps.setString(1, ID);
+                        ps.setString(2, "test");
+                        ps.setString(3, "1");
+                        ps.setString(4, "tester");
+                        // 実行 AND 結果表示
+                        System.out.println(ps.executeUpdate());
+                        break;
+                    default:
+                        throw new IllegalArgumentException();
+                }
             }
-        } finally {
-            ps.close();
         }
-    }
-
-    /**
-     * 終了処理
-     *
-     * @param con 接続先
-     * @param currentText 現在の実行結果
-     * @return 実行結果
-     */
-    private String finallyProcess(Connection con, String currentText){
-        BinaryOperator<String> decideText =
-                ((current, result) -> (Objects.isNull(current)?result:current));
-        String returnText;
-        try {
-            if (Objects.nonNull(con)) {
-                con.close();
-                // DB接続正常終了 例外処理未検知ならば NORMAL_COMPLETE
-                returnText = decideText.apply(currentText, NORMAL_COMPLETE);
-            } else {
-                // DB接続異常 例外処理未検知ならば UNREACHABLE_ERROR
-                returnText = decideText.apply(currentText, UNREACHABLE_ERROR);
-            }
-        } catch (Exception e) {
-            returnText =  e.getMessage();
-        }
-        return returnText;
     }
 }
