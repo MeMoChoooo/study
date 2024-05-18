@@ -1,14 +1,14 @@
 package chapter6;
 
-import common.ErrorText;
 import common.ResultData;
 import common.test.TestTemplate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.util.Objects;
 
+import static common.Common.testCaseEnum.ARGUMENT_CHECK_FIXED_TRUE;
 import static common.Common.testCaseEnum.PROPERTIES_ERROR;
+import static common.ErrorText.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -21,10 +21,10 @@ class StoredProcedureImplTest extends TestTemplate {
     void test01(){
         StoredProcedure test = new StoredProcedureImpl();
         ResultData resultData = test.execute(StoredProcedure.testCaseEnum.CASE1);
-        resultData.display();
-        assert resultData.isNormal();
-        assertEquals(ErrorText.NORMAL_COMPLETE,resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isNormal());
+        assertEquals(NORMAL_COMPLETE,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -34,10 +34,10 @@ class StoredProcedureImplTest extends TestTemplate {
                 "  詳細: キー (id)=(000000000008) はすでに存在します。 このバッチの他のエラーは getNextException を呼び出すことで確認できます。";
         StoredProcedure test = new StoredProcedureImpl();
         ResultData resultData = test.execute(StoredProcedure.testCaseEnum.CASE2);
-        resultData.display();
-        assert resultData.isError();
-        assert TEXT.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(TEXT,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -46,10 +46,10 @@ class StoredProcedureImplTest extends TestTemplate {
         setTestFlag(PROPERTIES_ERROR,true);
         StoredProcedure test = new StoredProcedureImpl();
         ResultData resultData = test.execute(StoredProcedure.testCaseEnum.CASE1);
-        resultData.display();
-        assert resultData.isError();
-        assert ErrorText.SYSTEM_ERROR.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(SYSTEM_ERROR,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -57,9 +57,22 @@ class StoredProcedureImplTest extends TestTemplate {
     void test04(){
         StoredProcedure test = new StoredProcedureImpl();
         ResultData resultData = test.execute(null);
-        resultData.display();
-        assert resultData.isError();
-        assert ErrorText.ARGUMENT_ERROR.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(ARGUMENT_ERROR,resultData.getText());
+        assertNull(resultData.getData());
+    }
+
+    @Test
+    @DisplayName("異常系：NULL引数チェック通過")
+    void test05(){
+        final String TEXT = "java.lang.NullPointerException";
+        setTestFlag(ARGUMENT_CHECK_FIXED_TRUE,true);
+        StoredProcedure test = new StoredProcedureImpl();
+        ResultData resultData = test.execute(null);
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(TEXT,resultData.getText());
+        assertNull(resultData.getData());
     }
 }

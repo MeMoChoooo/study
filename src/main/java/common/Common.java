@@ -23,7 +23,8 @@ public class Common {
      * テストにて発生可能なエラーケース
      */
     public enum testCaseEnum {
-        PROPERTIES_ERROR("PROPERTIES_ERROR", 0);
+        PROPERTIES_ERROR("PROPERTIES_ERROR", 0),
+        ARGUMENT_CHECK_FIXED_TRUE("ARGUMENT_CHECK_FIXED_TRUE",1);
 
         public final String outline;
         public final int index;

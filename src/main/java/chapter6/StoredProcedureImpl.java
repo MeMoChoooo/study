@@ -47,7 +47,7 @@ public class StoredProcedureImpl implements StoredProcedure{
         } catch (NoSuchElementException e) {
             returnText = SYSTEM_ERROR;
         } catch(Exception e) {
-            returnText =  e.getMessage();
+            returnText =  Objects.nonNull(e.getMessage())?e.getMessage():e.toString();
         }
         return new ResultData(StringUtils.isBlank(returnText)?NORMAL_COMPLETE:returnText, null);
     }

@@ -49,7 +49,7 @@ public class JdbcExecuteImpl implements JdbcExecute {
         } catch (NoSuchElementException e) {
             returnText = SYSTEM_ERROR;
         } catch(Exception e) {
-            returnText =  e.getMessage();
+            returnText =  Objects.nonNull(e.getMessage())?e.getMessage():e.toString();
         } finally {
             returnText = finallyProcess(con, returnText);
         }

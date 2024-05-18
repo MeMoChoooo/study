@@ -2,16 +2,16 @@ package chapter6;
 
 import org.junit.jupiter.api.Test;
 
-import common.ErrorText;
 import common.ResultData;
 import common.annotation.TestFlag;
 import common.test.TestTemplate;
 import org.junit.jupiter.api.DisplayName;
 
 
-import java.util.Objects;
-
+import static common.Common.testCaseEnum.ARGUMENT_CHECK_FIXED_TRUE;
 import static common.Common.testCaseEnum.PROPERTIES_ERROR;
+import static common.ErrorText.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -25,9 +25,10 @@ class JdbcExecuteImplTest extends TestTemplate {
         JdbcExecute test = new JdbcExecuteImpl();
         // TODO:初期化処理を工夫する
         ResultData resultData = test.execute(JdbcExecute.testCaseEnum.DELETE);
-        assert resultData.isNormal();
-        assert ErrorText.NORMAL_COMPLETE.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isNormal());
+        assertEquals(NORMAL_COMPLETE,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -36,9 +37,10 @@ class JdbcExecuteImplTest extends TestTemplate {
         JdbcExecuteImpl test = new JdbcExecuteImpl();
         // TODO:初期化処理を工夫する
         ResultData resultData = test.execute(JdbcExecute.testCaseEnum.INSERT);
-        assert resultData.isNormal();
-        assert ErrorText.NORMAL_COMPLETE.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isNormal());
+        assertEquals(NORMAL_COMPLETE,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -48,10 +50,10 @@ class JdbcExecuteImplTest extends TestTemplate {
         // TODO:初期化処理を工夫する
         test.execute(JdbcExecute.testCaseEnum.INSERT);
         ResultData resultData = test.execute(JdbcExecute.testCaseEnum.SELECT);
-        resultData.display();
-        assert resultData.isNormal();
-        assert ErrorText.NORMAL_COMPLETE.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isNormal());
+        assertEquals(NORMAL_COMPLETE,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -60,24 +62,25 @@ class JdbcExecuteImplTest extends TestTemplate {
         JdbcExecute test = new JdbcExecuteImpl();
         // TODO:初期化処理を工夫する
         ResultData resultData = test.execute(null);
-        resultData.display();
-        assert resultData.isError();
-        assert ErrorText.ARGUMENT_ERROR.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(ARGUMENT_ERROR,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
     @TestFlag(true)
     @DisplayName("異常系：INSERT2連続によるPK違反")
     void test05(){
+        final String TEXT = "ERROR: 重複したキー値は一意性制約\"person_pkey\"違反となります\n  詳細: キー (id)=(000000000000) はすでに存在します。";
         JdbcExecute test = new JdbcExecuteImpl();
         // TODO:初期化処理を工夫する
         test.execute(JdbcExecute.testCaseEnum.INSERT);
         ResultData resultData = test.execute(JdbcExecute.testCaseEnum.INSERT);
-        resultData.display();
-        assert resultData.isError();
-        assert "ERROR: 重複したキー値は一意性制約\"person_pkey\"違反となります\n  詳細: キー (id)=(000000000000) はすでに存在します。".equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(TEXT,resultData.getText());
+        assertNull(resultData.getData());
     }
 
     @Test
@@ -86,9 +89,22 @@ class JdbcExecuteImplTest extends TestTemplate {
         setTestFlag(PROPERTIES_ERROR,true);
         JdbcExecute test = new JdbcExecuteImpl();
         ResultData resultData = test.execute(JdbcExecute.testCaseEnum.INSERT);
-        resultData.display();
-        assert resultData.isError();
-        assert ErrorText.SYSTEM_ERROR.equals(resultData.getText());
-        assert Objects.isNull(resultData.getData());
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(SYSTEM_ERROR,resultData.getText());
+        assertNull(resultData.getData());
+    }
+
+    @Test
+    @DisplayName("異常系：NULL引数チェック通過")
+    void test07(){
+        final String TEXT = "java.lang.NullPointerException";
+        setTestFlag(ARGUMENT_CHECK_FIXED_TRUE,true);
+        JdbcExecute test = new JdbcExecuteImpl();
+        ResultData resultData = test.execute(null);
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(TEXT,resultData.getText());
+        assertNull(resultData.getData());
     }
 }
