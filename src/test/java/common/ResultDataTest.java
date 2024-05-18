@@ -36,22 +36,46 @@ class ResultDataTest {
     @Test
     @DisplayName("NORMAL, ARRAY")
     void test03(){
-        final int[] array = {1, 2, 3, 4};
-        ResultData resultData = new ResultData(NORMAL_COMPLETE, array);
+        final int[] ARRAY = {1, 2, 3, 4};
+        ResultData resultData = new ResultData(NORMAL_COMPLETE, ARRAY);
         resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
         assertTrue(resultData.isNormal());
         assertEquals(NORMAL_COMPLETE,resultData.getText());
-        assertEquals(array, resultData.getData());
+        assertEquals(ARRAY, resultData.getData());
     }
 
     @Test
     @DisplayName("ERROR, ARRAY")
     void test04(){
-        final int[] array = {1, 2, 3, 4};
-        ResultData resultData = new ResultData(SYSTEM_ERROR, array);
+        final int[] ARRAY = {1, 2, 3, 4};
+        ResultData resultData = new ResultData(SYSTEM_ERROR, ARRAY);
         resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
         assertTrue(resultData.isError());
         assertEquals(SYSTEM_ERROR,resultData.getText());
-        assertEquals(array, resultData.getData());
+        assertEquals(ARRAY, resultData.getData());
+    }
+
+    @Test
+    @DisplayName("setData")
+    void test05(){
+        final int[] ARRAY = {1, 2, 3, 4};
+        ResultData resultData = new ResultData();
+        resultData.setData(ARRAY);
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertNull(resultData.getText());
+        assertEquals(ARRAY, resultData.getData());
+    }
+
+    @Test
+    @DisplayName("setText")
+    void test06(){
+        final String TEXT = "TEST";
+        ResultData resultData = new ResultData();
+        resultData.setText(TEXT);
+        resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
+        assertTrue(resultData.isError());
+        assertEquals(TEXT,resultData.getText());
+        assertNull(resultData.getData());
     }
 }
