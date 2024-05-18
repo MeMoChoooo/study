@@ -1,4 +1,4 @@
-package org.chapter4;
+package chapter4;
 
 import java.util.Comparator;
 import java.util.List;

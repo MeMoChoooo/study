@@ -1,13 +1,14 @@
-package org.common;
+package common;
 
-import org.common.test.TestStatus;
+import common.test.TestStatus;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-import static org.common.Common.testCaseEnum.PROPERTIES_ERROR;
+import static common.Common.testCaseEnum.PROPERTIES_ERROR;
+
 
 /**
  * 共通処理
@@ -22,7 +23,8 @@ public class Common {
      * テストにて発生可能なエラーケース
      */
     public enum testCaseEnum {
-        PROPERTIES_ERROR("PROPERTIES_ERROR", 0);
+        PROPERTIES_ERROR("PROPERTIES_ERROR", 0),
+        ARGUMENT_CHECK_FIXED_TRUE("ARGUMENT_CHECK_FIXED_TRUE",1);
 
         public final String outline;
         public final int index;

@@ -1,4 +1,6 @@
-package org.common;
+package common;
+
+import java.util.Objects;
 
 /**
  *　実行メソッドの実行結果データ
@@ -7,12 +9,12 @@ public class ResultData {
     private String text;
     private Object data;
 
-    public ResultData(){
+    public ResultData() {
         text = null;
         data = null;
     }
 
-    public ResultData(String text, Object data){
+    public ResultData(String text, Object data) {
         this.text = text;
         this.data = data;
     }
@@ -22,7 +24,7 @@ public class ResultData {
      *
      * @param text 結果メッセージ
      */
-    public void setText(String text){
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -65,5 +67,18 @@ public class ResultData {
      */
     public boolean isNormal() {
         return ErrorText.isNormal(text);
+    }
+
+    /**
+     * 結果表示
+     */
+    public void display(String testCase) {
+        System.out.println("[" + testCase + ".text]:" + text);
+        if (Objects.isNull(data)) {
+            System.out.println("[" + testCase + ".data]:" + null);
+        } else {
+            System.out.println("[" + testCase + ".data]:(" + (data.getClass().getTypeName()) + ")");
+
+        }
     }
 }

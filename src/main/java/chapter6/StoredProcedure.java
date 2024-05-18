@@ -1,6 +1,7 @@
-package org.chapter6;
+package chapter6;
 
-import org.common.ResultData;
+import common.ExecuteTemplate;
+import common.ResultData;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.Objects;
 /**
  * ストアド・プロージャの実装　インタフェース
  */
-public interface StoredProcedure {
+public interface StoredProcedure extends ExecuteTemplate {
 
     /**
      * 実行可能なテストケース
@@ -38,8 +39,10 @@ public interface StoredProcedure {
      * @param argument 引数（型は問わない）
      * @return 引数異常有無チェック結果
      */
+    @Override
     default boolean isArgumentError(Object argument){
-        return Objects.isNull(argument) || Arrays.stream(testCaseEnum.values())
+        if(testFixedTrue())return false;
+        return Objects.isNull(argument) || Arrays.stream(StoredProcedure.testCaseEnum.values())
                 .allMatch(val -> Objects.equals(argument, val));
     }
 }

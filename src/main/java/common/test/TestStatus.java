@@ -1,7 +1,7 @@
-package org.common.test;
+package common.test;
 
 import java.util.Arrays;
-import org.common.Common.testCaseEnum;
+import common.Common.testCaseEnum;
 
 /**
  * テストのステータスを管理する
