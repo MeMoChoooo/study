@@ -48,7 +48,7 @@ class ResultDataTest {
     @DisplayName("ERROR, ARRAY")
     void test04(){
         final int[] ARRAY = {1, 2, 3, 4};
-        ResultData resultData = new ResultData(SYSTEM_ERROR, ARRAY);
+        ResultData<int[]> resultData = new ResultData(SYSTEM_ERROR, ARRAY);
         resultData.display(new Object(){}.getClass().getEnclosingMethod().getName());
         assertTrue(resultData.isError());
         assertEquals(SYSTEM_ERROR,resultData.getText());

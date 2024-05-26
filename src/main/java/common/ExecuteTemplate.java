@@ -4,7 +4,7 @@ import common.test.TestStatus;
 
 import static common.Common.testCaseEnum.ARGUMENT_CHECK_FIXED_TRUE;
 
-public interface ExecuteTemplate {
+public interface ExecuteTemplate<T> {
 
     /**
      * 引数チェック（NULLチェック, 存在チェック)
@@ -12,7 +12,7 @@ public interface ExecuteTemplate {
      * @param argument 引数（型は問わない）
      * @return 引数異常有無チェック結果
      */
-    boolean isArgumentError(Object argument);
+    boolean isArgumentError(T argument);
 
     /**
      * testFlagに応じて引数チェックを強制的に通す

@@ -1,4 +1,4 @@
-package chapter6;
+package chapter7;
 
 import common.ExecuteTemplate;
 import common.ResultData;
@@ -6,17 +6,11 @@ import common.ResultData;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * ストアド・プロージャの実装　インタフェース
- */
-public interface StoredProcedure extends ExecuteTemplate<StoredProcedure.testCaseEnum> {
+public interface GenericsCheck extends ExecuteTemplate<GenericsCheck.testCaseEnum> {
 
-    /**
-     * 実行可能なテストケース
-     */
     enum testCaseEnum {
-        CASE1("CASE1"),
-        CASE2("CASE2");
+        CASE1("String"),
+        CASE2("Shop<Books>");
 
         public final String outline;
 
@@ -31,7 +25,7 @@ public interface StoredProcedure extends ExecuteTemplate<StoredProcedure.testCas
      * @param testCase 実施テストケース
      * @return 実行結果
      */
-    ResultData execute(testCaseEnum testCase);
+    ResultData<Object> execute(testCaseEnum testCase);
 
     /**
      * 引数チェック（NULLチェック, 存在チェック)
@@ -41,8 +35,9 @@ public interface StoredProcedure extends ExecuteTemplate<StoredProcedure.testCas
      */
     @Override
     default boolean isArgumentError(testCaseEnum argument){
-        if(testFixedTrue())return false;
-        return Objects.isNull(argument) || Arrays.stream(testCaseEnum.values())
+        if (testFixedTrue()) return false;
+
+        return Objects.isNull(argument) || Arrays.stream(GenericsCheck.testCaseEnum.values())
                 .allMatch(val -> Objects.equals(argument, val));
     }
 }

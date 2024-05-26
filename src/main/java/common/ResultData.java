@@ -5,16 +5,16 @@ import java.util.Objects;
 /**
  *　実行メソッドの実行結果データ
  */
-public class ResultData {
+public class ResultData<T> {
     private String text;
-    private Object data;
+    private T data;
 
     public ResultData() {
         text = null;
         data = null;
     }
 
-    public ResultData(String text, Object data) {
+    public ResultData(String text, T data) {
         this.text = text;
         this.data = data;
     }
@@ -40,14 +40,14 @@ public class ResultData {
      *
      * @param data 結果データ
      */
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 
     /**
      * 結果データを返却
      */
-    public Object getData() {
+    public T getData() {
         return data;
     }
 

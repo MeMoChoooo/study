@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * JDBCの実装　インタフェース
  */
-public interface JdbcExecute extends ExecuteTemplate {
+public interface JdbcExecute extends ExecuteTemplate<JdbcExecute.testCaseEnum> {
 
     /**
      * 実行可能なテストケース
@@ -41,10 +41,10 @@ public interface JdbcExecute extends ExecuteTemplate {
      * @return 引数異常有無チェック結果
      */
     @Override
-    default boolean isArgumentError(Object argument){
+    default boolean isArgumentError(testCaseEnum argument){
         if (testFixedTrue()) return false;
 
-        return Objects.isNull(argument) || Arrays.stream(StoredProcedure.testCaseEnum.values())
+        return Objects.isNull(argument) || Arrays.stream(testCaseEnum.values())
                 .allMatch(val -> Objects.equals(argument, val));
     }
 }

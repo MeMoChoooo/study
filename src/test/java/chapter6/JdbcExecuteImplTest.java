@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JdbcExecuteImplTest extends TestTemplate {
 
     @Test
-    @DisplayName("正常系：INSERT")
+    @DisplayName("正常系：DELETE")
     void test01(){
         JdbcExecute test = new JdbcExecuteImpl();
         // TODO:初期化処理を工夫する
@@ -32,7 +32,7 @@ class JdbcExecuteImplTest extends TestTemplate {
     }
 
     @Test
-    @DisplayName("正常系：DELETE")
+    @DisplayName("正常系：INSERT")
     void test02(){
         JdbcExecuteImpl test = new JdbcExecuteImpl();
         // TODO:初期化処理を工夫する
