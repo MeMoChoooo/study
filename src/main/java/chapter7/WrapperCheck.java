@@ -1,4 +1,4 @@
-package chapter6;
+package chapter7;
 
 import common.ExecuteTemplate;
 import common.ResultData;
@@ -6,17 +6,19 @@ import common.ResultData;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * ストアド・プロージャの実装　インタフェース
- */
-public interface StoredProcedure extends ExecuteTemplate<StoredProcedure.testCaseEnum> {
-
+public interface WrapperCheck extends ExecuteTemplate {
     /**
      * 実行可能なテストケース
      */
     enum testCaseEnum {
-        CASE1("CASE1"),
-        CASE2("CASE2");
+        CASE1("Integer"),
+        CASE2("Short"),
+        CASE3("Byte"),
+        CASE4("Long"),
+        CASE5("Double"),
+        CASE6("Float"),
+        CASE7("Character"),
+        CASE8("Boolean");
 
         public final String outline;
 
@@ -40,8 +42,9 @@ public interface StoredProcedure extends ExecuteTemplate<StoredProcedure.testCas
      * @return 引数異常有無チェック結果
      */
     @Override
-    default boolean isArgumentError(testCaseEnum argument){
-        if(testFixedTrue())return false;
+    default boolean isArgumentError(Object argument){
+        if (testFixedTrue()) return false;
+
         return Objects.isNull(argument) || Arrays.stream(testCaseEnum.values())
                 .allMatch(val -> Objects.equals(argument, val));
     }
